@@ -1,73 +1,77 @@
-import React from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React from 'react';
+import { SafeAreaView, ScrollView, View, Text, Image } from 'react-native';
+import { styled } from 'nativewind';
 
-const ProfileScreen = ({ navigation }) => {
-  const user = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    bio: "Software Engineer | Tech Enthusiast | Traveler",
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-  };
+// ✅ Styled components for Tailwind compatibility
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+
+const ProfileScreen = () => {
+  const firstName = 'Emily';
+  const buddies = 21;
+  const activitiesJoined = 6;
+  const classes = ['EN1', 'PHY11', 'MATH34', 'CS11'];
+  const interests = ['Gym', 'Photography', 'Economics', 'Food'];
+  const gradYear = 2028;
+
+  const avatarUrl = 'https://api.dicebear.com/9.x/adventurer/png?seed=Emily';
 
   return (
-    <View style={styles.container}>
-      {/* Profile Image */}
-      <Image source={{ uri: user.avatar }} style={styles.avatar} />
+    <SafeAreaView className="bg-white flex-1">
+      <ScrollView className="p-4">
+        {/* Profile Avatar and Info */}
+        <StyledView className="items-center mb-6">
+          <StyledImage
+            source={{ uri: avatarUrl }}
+            className="w-32 h-32 rounded-full mb-4"
+            resizeMode="cover"
+          />
+          <StyledText className="text-3xl font-bold">Hi {firstName}</StyledText>
+          <StyledText className="text-xl text-gray-600">Class of {gradYear}</StyledText>
+          <StyledView className="flex-row space-x-4 mt-2">
+            <StyledText className="text-gray-600">Buddies: {buddies}</StyledText>
+            <StyledText className="text-gray-600">Activities Joined: {activitiesJoined}</StyledText>
+          </StyledView>
+        </StyledView>
 
-      {/* User Details */}
-      <Text style={styles.name}>{user.name}</Text>
-      <Text style={styles.email}>{user.email}</Text>
-      <Text style={styles.bio}>{user.bio}</Text>
+        {/* Classes */}
+        <StyledView className="mb-6">
+          <StyledText className="text-lg font-semibold mb-2">Classes</StyledText>
+          <StyledView className="flex-row flex-wrap">
+            {classes.map((course, index) => (
+              <StyledView
+                key={index}
+                className="bg-gray-500 rounded-full p-3 m-1 shadow-md"
+              >
+                <StyledText className="text-white text-sm">{course}</StyledText>
+              </StyledView>
+            ))}
+          </StyledView>
 
-      {/* Edit Profile Button */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("editProfile")}>
-        <Text style={styles.buttonText }>Edit Profile</Text>
-      </TouchableOpacity>
-    </View>
+          <StyledText className="text-lg font-semibold mt-4 mb-2">Interests</StyledText>
+          <StyledView className="flex-row flex-wrap">
+            {interests.map((interest, index) => (
+              <StyledView
+                key={index}
+                className="bg-[#3B79BA] rounded-full p-3 m-1 shadow-md"
+              >
+                <StyledText className="text-white text-sm">{interest}</StyledText>
+              </StyledView>
+            ))}
+          </StyledView>
+        </StyledView>
+
+        {/* Upcoming Events */}
+        <StyledView className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <StyledText className="text-xl font-bold mb-2">Upcoming Events</StyledText>
+          <StyledText className="text-gray-600">
+            No upcoming events at the moment.
+          </StyledText>
+        </StyledView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f4f4f4",
-  },
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 15,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  email: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
-    marginBottom: 5,
-  },
-  bio: {
-    fontSize: 14,
-    textAlign: "center",
-    fontStyle: "italic",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#007bff",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default ProfileScreen;

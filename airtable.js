@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const BASE_ID = "";
-const TABLE_ID = "your_table_id";
-const API_TOKEN = "your_personal_access_token";
+const BASE_ID = "appA57UXA6w66Rkkt";
+const TABLE_ID = "Profiles";
+const API_TOKEN = "patAzfWJz4mHtHZtY.d9626e8dc28aaefc6761ed056781dd7c777b6d0ecf786e5af0712dd727d4ef90";
 
 // Base URL for Airtable API
 const AIRTABLE_URL = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}`;

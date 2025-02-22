@@ -1,58 +1,44 @@
-import React from "react";
-import { View, FlatList, Image, TouchableOpacity, StyleSheet, Text } from "react-native";
+import React from 'react';
+import { View, Text, ScrollView, SafeAreaView } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { styled } from 'nativewind';
 
-const friends = [
-  { id: "1", name: "Alice Johnson", avatar: "https://randomuser.me/api/portraits/women/1.jpg" },
-  { id: "2", name: "Michael Smith", avatar: "https://randomuser.me/api/portraits/men/2.jpg" },
-  { id: "3", name: "Emma Brown", avatar: "https://randomuser.me/api/portraits/women/3.jpg" },
-];
+const StyledView = styled(View);
+const StyledText = styled(Text);
 
-const FriendsScreen = ({ navigation }) => {
+const FriendsScreen = () => {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={friends}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate("FriendProfile", { friend: item })} style={styles.friendItem}>
-            <Image source={{ uri: item.avatar }} style={styles.avatar} />
-            <Text style={styles.name}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
+    <SafeAreaView className="bg-white flex-1">
+      <ScrollView className="bg-white flex-1 p-4">
+      <StyledView className="flex-1 bg-white px-4">
+        {/* Header */}
+        <StyledView className="flex-row justify-between items-center py-4">
+          <Feather name="menu" size={24} color="black" />
+          <StyledText className="text-lg font-bold text-blue-600">friends</StyledText>
+          <Feather name="bell" size={24} color="black" />
+        </StyledView>
+
+        {/* Jumbuddies Section */}
+        <StyledView className="mt-5">
+          <StyledText className="text-base font-semibold mb-3">jumbuddies:</StyledText>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {[...Array(10)].map((_, index) => (
+              <StyledView
+                key={index}
+                className="w-14 h-14 rounded-full bg-gray-200 mr-3"
+              />
+            ))}
+          </ScrollView>
+        </StyledView>
+
+        {/* Activity Feed Header */}
+        <StyledView className="mt-6">
+          <StyledText className="text-base font-semibold">activity feed:</StyledText>
+        </StyledView>
+      </StyledView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f4f4f4",
-  },
-  friendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#fff",
-    marginBottom: 10,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 15,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
-
-export default FriendsScreen;
+export default FriendsScreen; // ✅ Make sure this is here

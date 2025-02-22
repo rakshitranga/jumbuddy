@@ -1,57 +1,64 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import PersonCard from '@/components/PersonCard';
+import '../../global.css';
 
-export default function SearchScreen() {
+// replace with database info later 
+const users = [
+  {
+    profileImage: 'https://example.com/image1.jpg',
+    name: 'Alice',
+    gradYear: '2027',
+    major: 'Science',
+    classes: ['Math', 'English'],
+    interests: ['Coding', 'Reading'],
+    lookingFor: ['Study Partner'],
+    bio: 'Open to joining a science club and study groups.',
+  },
+  {
+    profileImage: 'https://example.com/image2.jpg',
+    name: 'Bob',
+    gradYear: '2028',
+    major: 'History',
+    classes: ['History', 'Art'],
+    interests: ['Photography', 'Debate'],
+    lookingFor: ['Discussion Partner'],
+    bio: 'Looking to share ideas on historical topics.',
+  },
+];
+
+export default function JumBuddyScreen() {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
-    <View style={styles.container}>
-      <View style={styles.searchBarContainer}>
-        <Ionicons name="search" size={20} color="gray" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Search for a Buddy!"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholderTextColor="gray"
-        />
-        <TouchableOpacity>
-          <Ionicons name="options-outline" size={24} color="#3B82F6" style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    </View>
+    <SafeAreaView className="bg-white flex-1">
+      <ScrollView className="bg-white flex-1 p-4">
+        {/* search bar */}
+          <View className="flex-row items-center bg-white rounded-full border border-gray-300 px-3 py-2 shadow-sm">
+            <Ionicons name="search" size={20} color="gray" className="mx-2" />
+            <TextInput
+              className="flex-1 text-base text-black"
+              placeholder="Search for a Buddy!"
+              placeholderTextColor="gray"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            <TouchableOpacity>
+              <Ionicons name="options-outline" size={24} color="#3B82F6" className="mx-2" />
+            </TouchableOpacity>
+          </View>
+
+        {/* map of person cards */}
+        <View>
+        {users.map((user, index) => (
+          <PersonCard key={index} user={user} />
+        ))}
+        </View>
+
+        
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFCF9',
-    paddingTop: 60,
-    paddingHorizontal: 16,
-  },
-  searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 3,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000',
-  },
-  icon: {
-    marginHorizontal: 8,
-  },
-});

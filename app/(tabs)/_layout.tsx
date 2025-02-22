@@ -37,7 +37,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="jumbuddy"
         options={{
-          title: 'Jumbuddy',
+          title: 'JumBuddy',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="magnifyingglass" color={color} />,
         }}
       />
@@ -52,6 +52,13 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="testapi"
+        options={{
+          title: 'TEST',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
