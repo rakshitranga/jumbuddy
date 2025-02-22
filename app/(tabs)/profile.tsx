@@ -15,7 +15,7 @@ const ProfileScreen = () => {
   const interests = ['Gym', 'Photography', 'Economics', 'Food'];
   const gradYear = 2028;
 
-  const avatarUrl = 'https://api.dicebear.com/9.x/adventurer/png?seed=Emily';
+  // const avatarUrl = ;
 
   return (
     <SafeAreaView className="bg-white flex-1">
@@ -23,8 +23,9 @@ const ProfileScreen = () => {
         {/* Profile Avatar and Info */}
         <StyledView className="items-center mb-6">
           <StyledImage
-            source={{ uri: avatarUrl }}
-            className="w-32 h-32 rounded-full mb-4"
+            src="https://api.dicebear.com/9.x/adventurer/png?seed=Emily"
+            alt="avatar"
+            className="w-32 h-32 mb-4"
             resizeMode="cover"
           />
           <StyledText className="text-3xl font-bold">Hi {firstName}</StyledText>

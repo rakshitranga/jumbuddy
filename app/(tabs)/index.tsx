@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Text, Image, View, TouchableOpacity, SafeAreaView, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import '../../global.css';
@@ -10,6 +10,7 @@ export default function Index() {
   const firstName = "Emily";
 
   const [loggedIn, setLoggedIn] = useState(false);
+  const [userId, setUserId] = useState("false");
 
   const retrieveLoggedInInfo = async () => {
     try {
@@ -23,6 +24,10 @@ export default function Index() {
       return false;
     }
   }
+
+  useEffect(() => {
+    console.log(loggedIn);
+  }, [loggedIn]);
 
   retrieveLoggedInInfo();
 
@@ -62,7 +67,7 @@ export default function Index() {
       <SafeAreaView>
         <View>
           <Text className="text-white">Login</Text>
-          <Login></Login>
+          <Login setLoggedIn={(setLoggedIn)} setUserId={(setUserId)}></Login>
         </View>
       </SafeAreaView>
       )
