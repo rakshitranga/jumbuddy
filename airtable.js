@@ -56,6 +56,27 @@ const AirtableService = {
     }
   },
 
+  getUsersByFriendsIds: async(friendids) => {
+    idArray = friendids.split(",");
+    formula = "OR(";
+    for (let i = 0; i < idArray.length, i++) {
+        formula += "{id}='" + idArray[i] + "'";
+    }
+    formula+= ")";
+    try {
+        const response = await axios.get(`${AIRTABLE_URL}?filterByFormula=${formula})`, {
+          headers: {
+            Authorization: `Bearer ${API_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        });
+        return response.data.records;
+    } catch (error) {
+        console.error("Error fetching Airtable records:", error);
+        return [];
+    }
+  },
+
   /**
    * Add a new record to Airtable
    * @param {Object} fields - Fields for the new record

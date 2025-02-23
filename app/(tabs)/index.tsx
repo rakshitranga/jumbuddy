@@ -18,9 +18,7 @@ export default function Index() {
   const retrieveLoggedInInfo = async () => {
     try {
       const value = await AsyncStorage.getItem('logged_in');
-      if(value == "true") {
-        setLoggedIn("true")
-      } 
+      setLoggedIn(value);
       return value; 
 
     } catch(e) {
@@ -30,10 +28,8 @@ export default function Index() {
 
   useEffect(() => {
     retrieveLoggedInInfo(); 
-  }, []);
 
-  useEffect(() => {
-    if (loggedIn == "true") {
+    if (loggedIn == "true" && userId) {
       const fetchUser = async () => {
         try {
           const data = await AirtableService.getUserById(userId);
@@ -50,14 +46,12 @@ export default function Index() {
       }
       fetchUser(); 
     }
-  }, [loggedIn]);
-
+  }, [loggedIn, userId]);
 
   const logOut = () => {
     setLoggedIn("false");
     AsyncStorage.setItem('logged_in', 'false');
   }
-
 
   return (
     loggedIn == "true" && user ? (
@@ -71,7 +65,7 @@ export default function Index() {
           className = "w-24 h-24 rounded-full"
           ></Image> */}
         <View>
-          <Text className="text-lg font-bold text-gray-900">Hi {user.name}</Text>
+          <Text className="text-xlg font-bold text-gray-900">Hi {user.name}</Text>
           <Text className="text-sm text-gray-600">Make a new jumbuddy today!</Text>
         </View>
       </View>
@@ -97,7 +91,7 @@ export default function Index() {
       </SafeAreaView> ) : (
       <SafeAreaView>
         <View>
-          <Login setLoggedIn={(setLoggedIn)} setUserId={(setUserId)}></Login>
+          <Login setLoggedIn={setLoggedIn} setUserId={setUserId}></Login>
         </View>
       </SafeAreaView>
       )

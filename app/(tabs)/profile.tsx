@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, View, Text, Image, TouchableOpacity  } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User, mapAirtableUser } from "@/components/mapAirtableUser";
+import AirtableService from "../../airtable";
 
 const ProfileScreen = () => {
+  const [user, setUser] = useState<User | null>(null); 
+
   //avatar customise scene
   const[avatarOptions, setAvatarOptions]= useState({
       seed: "Emily",
@@ -23,6 +27,26 @@ const ProfileScreen = () => {
   const interests = ['Gym', 'Photography', 'Economics', 'Food'];
   const gradYear = 2028;
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userId = await AsyncStorage.getItem("user_id"); 
+        const data = await AirtableService.getUserById(userId);
+
+        if (data && data.length > 0) {
+          const userData = mapAirtableUser(data[0]);
+          console.log(userData);
+          setUser(userData);
+        } else {
+          console.log("No user found");
+        }
+      } catch (e) {
+        console.error("Error fetching user:", e);
+      }
+    }
+    fetchUser(); 
+  }, []);
+
   //function to update avatar options 
   
   const updateAvatarOption = (option: string, value: any) => {
@@ -35,14 +59,13 @@ const ProfileScreen = () => {
 
   const avatarUrl = `https://api.dicebear.com/9.x/adventurer/png?seed=${avatarOptions.seed}&eyes=${avatarOptions.eyes}&mouth=${avatarOptions.mouth}&accessories=${avatarOptions.accessories}`;
 
-
   return (
-    <SafeAreaView className="bg-white flex-1">
+    user ? (<SafeAreaView className="bg-white flex-1">
       <ScrollView className="p-4">
         {/* Header */}
         <View className="flex-row justify-between items-center py-4">
           <Feather name="menu" size={24} color="black" />
-            <Text className="text-lg font-bold text-blue-600"> Profile</Text>
+            <Text className="text-lg font-bold text-blue-600"> Profile </Text>
           <Feather name="bell" size={24} color="black" />
         </View>
 
@@ -60,10 +83,10 @@ const ProfileScreen = () => {
           </TouchableOpacity>
           
           <View>
-            <Text className="text-3xl font-bold">{firstName+" "+lastName}</Text>
+            <Text className="text-3xl font-bold">{user.name}</Text>
             {/* TODO: put an edit symbol & link to edit profile page */}
           </View>
-          <Text className="text-xl text-gray-600">Class of {gradYear}</Text>
+          <Text className="text-xl text-gray-600">Class of {user.gradyear}</Text>
           <View className="flex-row space-x-4 mt-2">
             <Text className="text-gray-600">Buddies: {buddies}</Text>
             <Text className="text-gray-600">Activities Joined: {activitiesJoined}</Text>
@@ -139,7 +162,8 @@ const ProfileScreen = () => {
       </ScrollView>
 
 
-    </SafeAreaView>
+    </SafeAreaView>) : (null)
+    
   );
 };
 

@@ -1,17 +1,18 @@
 export interface User {
     id: string;
     name: string;
-    email: string;
     username: string;
+    email: string;
+    friendids: string;
+    gradyear: string; 
+    major: string;
+    interests: string;
+    classes: string; 
+    bio: string; 
+    friendrequests: string; 
   }
 
 export function mapAirtableUser(record: any): User {
-    const { Email, Name, id, username } = record.fields;
-    return {
-      id, // assuming this is the unique id for the user
-      name: Name,
-      email: Email,
-      username,
-    };
+    return { ...record.fields } as User;
   }
   
