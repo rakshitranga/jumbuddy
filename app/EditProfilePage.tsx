@@ -2,11 +2,12 @@ import React, {useState} from 'react';
 import { Text, Image, View, TouchableOpacity, SafeAreaView, ScrollView, TextInput, Alert } from "react-native";
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AirtableService from '@/airtable';
 
 export default function SetProfilePage() {
     const [page, setPage] = useState(1);
-    const [name, setName] = useState(''); 
+    const [name, setName] = useState('');
     const [graduationYear, setGraduationYear] = useState('');
     const [major, setMajor] = useState('');
     const [classInput, setClassInput] = useState('');
@@ -41,8 +42,25 @@ export default function SetProfilePage() {
       if(page < 3) {
         setPage(page + 1);
       } else {
-        //TODO: redirect to the home page
+        // update user with new data and reroute
+        const updateUser = async () => {
+          const uniqueId = await AsyncStorage.getItem("unique_id");
+          if (uniqueId) {
+            const result = await AirtableService.updateRecord(uniqueId, {
+              'name': name,
+              'gradyear': graduationYear,
+              'major': major,
+              'classes': userClasses.join(','),
+              'interests': userInterests.join(',')
+            });
+            console.log(result);
+          }
+        }
+
+        updateUser();
         router.replace('/(tabs)');
+
+        setPage(1);
       }
     };
 
@@ -59,7 +77,7 @@ export default function SetProfilePage() {
               <TextInput
                 value={name}
                 onChangeText={setName}
-                placeholder="enter name here:"
+                placeholder="Enter name here (First Last)"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 className="border border-gray-300 rounded-lg p-4 text-base"
               />
@@ -70,7 +88,7 @@ export default function SetProfilePage() {
               <TextInput
                 value={graduationYear}
                 onChangeText={setGraduationYear}
-                placeholder="enter year here:"
+                placeholder="Enter year here"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 keyboardType="numeric"
                 className="border border-gray-300 rounded-lg p-4 text-base"
@@ -82,7 +100,7 @@ export default function SetProfilePage() {
               <TextInput
                 value={major}
                 onChangeText={setMajor}
-                placeholder="enter major here:"
+                placeholder="Enter major here"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 className="border border-gray-300 rounded-lg p-4 text-base"
               />
@@ -104,7 +122,7 @@ export default function SetProfilePage() {
                       value={classInput}
                       onChangeText={setClassInput}
                       className="flex-1 text-base text-gray-700 pl-2"  // Added pl-2 for left padding
-                      placeholder="Search for your classes!"
+                      placeholder="Search for your classes"
                       placeholderTextColor="#4B5563"  // Darker placeholder text
                       textAlignVertical="center"  // Centers text vertically
                       onSubmitEditing={handleAddClass}
@@ -117,7 +135,7 @@ export default function SetProfilePage() {
 
                   
                   <View className="mb-8">
-                    <Text className="text-lg font-semibold mb-3">added:</Text>
+                    <Text className="text-lg font-semibold mb-3">Added:</Text>
                     <View className="flex-row flex-wrap">
                       {userClasses.map((course, index) => (
                         <View
@@ -158,7 +176,7 @@ export default function SetProfilePage() {
                 </View>
 
                 <View className="mb-6">
-                  <Text className="text-lg font-semibold mb-3">popular:</Text>
+                  <Text className="text-lg font-semibold mb-3">Popular:</Text>
                   <View className="flex-row flex-wrap">
                     {popularInterests.map((interest, index) => (
                       <View
@@ -172,7 +190,7 @@ export default function SetProfilePage() {
                 </View>
 
                 <View className="mb-8">
-                  <Text className="text-lg font-semibold mb-3">interests:</Text>
+                  <Text className="text-lg font-semibold mb-3">Your interests:</Text>
                   <View className="flex-row flex-wrap">
                     {userInterests.map((interest, index) => (
                       <View
@@ -201,7 +219,7 @@ export default function SetProfilePage() {
           style={{ backgroundColor: "#0057D2"}}
           >
           <Text className="text-white text-lg font-bold">
-            {page === 3 ? "let's go!" : "next"}
+            {page === 3 ? "Let's go!" : "Next"}
           </Text>
       </TouchableOpacity>
       </View>

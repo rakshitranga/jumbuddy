@@ -39,7 +39,7 @@ export default function Login(props: loginProps) {
               <TextInput
                 value={username}
                 onChangeText={setUsername}
-                placeholder="Enter your username."
+                placeholder="Enter your username"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 className="border border-gray-300 rounded-lg p-4 text-base"
               />
@@ -49,7 +49,7 @@ export default function Login(props: loginProps) {
               <TextInput
                 value={password}
                 onChangeText={setPassword}
-                placeholder="Enter your password."
+                placeholder="Enter your password"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 className="border border-gray-300 rounded-lg p-4 text-base"
               />

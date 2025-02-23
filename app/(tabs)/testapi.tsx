@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, ActivityIndicator, SafeAreaView, ScrollView } from "react-native";
 import AirtableService from "../../airtable";
 import EventCard from "../../components/EventCard";
-import SetProfilePage from "../../components/EditProfilePage";
+import SetProfilePage from "../EditProfilePage";
 
 const RecordList = () => {
   const [records, setRecords] = useState([]);

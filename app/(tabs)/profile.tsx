@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User, mapAirtableUser } from "@/components/mapAirtableUser";
 import AirtableService from "../../airtable";
-import AvatarCustomizer from "../../components/AvatarCustomizer"; 
+import AvatarCustomizer from "../components/AvatarCustomizer"; 
 
 
 interface AvatarOptions {
@@ -48,7 +48,24 @@ const ProfileScreen: React.FC = () => {
         setUniqueId(data[0].id)
         setAvatarUrl(data[0].fields.avatarlink);
 
-        
+        const params = new URLSearchParams(data[0].fields.avatarlink);
+        const seed = params.get("seed");
+        const eyes = params.get("eyes");
+        const hair = params.get("hair");
+        const mouth = params.get("mouth");
+        const skinColor = params.get("skinColor");
+        const hairColor = params.get("hairColor");
+        console.log(seed, eyes, hair, mouth, skinColor, hairColor);
+        if (seed && eyes && hair && mouth && skinColor && hairColor) {
+          setAvatarOptions({
+            seed: data[0].fields.avatarlink,
+            eyes: eyes,
+            hair: hair,
+            mouth: mouth,
+            skinColor: skinColor,
+            hairColor: hairColor
+          });
+        }
 
         if (data && data.length > 0) {
           const userData = mapAirtableUser(data[0]);

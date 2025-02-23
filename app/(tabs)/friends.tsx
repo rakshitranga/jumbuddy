@@ -15,7 +15,7 @@ const FriendsScreen = () => {
       const data = await AirtableService.getUserById(userId);
       console.log(userId);
       console.log(data[0].fields.friendids);
-      const friends = await AirtableService.getUsersByFriendsIds(data[0].fields.friendids);
+      const friends = await AirtableService.getUsersByFriendsIds(data[0].fields.friendids.toString());
       console.log(friends.records);
       setUserFriends(friends.records);
     }

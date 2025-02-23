@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AirtableService from "../airtable";
+import { useRouter } from "expo-router";
 
 interface loginProps {
     setLoggedIn: (loggedin: string) => void;
@@ -10,16 +11,15 @@ interface loginProps {
 
 export default function SignUp(props: loginProps) {
     const {setLoggedIn, setUserId} = props;
-    const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const router = useRouter(); 
 
-    const handleSignUp = async (name: string, email:string, username: string, password: string) => {
+    const handleSignUp = async (email:string, username: string, password: string) => {
         try {
             // making new user 
             const fields = {
-                'name': name, 
                 'email': email, 
                 'username': username,
                 'password': password
@@ -31,8 +31,12 @@ export default function SignUp(props: loginProps) {
             
             setUserId(userId); 
             setLoggedIn("true");
+            await AsyncStorage.setItem("unique_id", result.records[0].id);
             await AsyncStorage.setItem("logged_in", "true");
             await AsyncStorage.setItem("user_id", userId);
+
+            router.replace('/EditProfilePage');
+
 
         } catch (error) {
             console.error("Signup error:", error);
@@ -42,21 +46,11 @@ export default function SignUp(props: loginProps) {
     return (
         <View>
             <View className="mb-6"> 
-              <Text className="text-lg font-semibold mb-2">Name: </Text>
-              <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="Enter your name. (First Last)"
-                placeholderTextColor="#4B5563"  // Darker placeholder text
-                className="border border-gray-300 rounded-lg p-4 text-base"
-              />
-            </View>
-            <View className="mb-6"> 
               <Text className="text-lg font-semibold mb-2">Tufts email: </Text>
               <TextInput
                 value={email}
                 onChangeText={setEmail}
-                placeholder="Enter your email."
+                placeholder="Enter your email"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 className="border border-gray-300 rounded-lg p-4 text-base"
               />
@@ -66,7 +60,7 @@ export default function SignUp(props: loginProps) {
               <TextInput
                 value={username}
                 onChangeText={setUsername}
-                placeholder="Create your username."
+                placeholder="Create your username"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 className="border border-gray-300 rounded-lg p-4 text-base"
               />
@@ -77,17 +71,17 @@ export default function SignUp(props: loginProps) {
               <TextInput
                 value={password}
                 onChangeText={setPassword}
-                placeholder="Set your password."
+                placeholder="Set your password"
                 placeholderTextColor="#4B5563"  // Darker placeholder text
                 className="border border-gray-300 rounded-lg p-4 text-base"
               />
             </View>
             <TouchableOpacity 
-                onPress={() => {handleSignUp(name, email, username, password)}}
+                onPress={() => {handleSignUp(email, username, password)}}
                 className="py-4 rounded-lg items-center"
                 style={{ backgroundColor: "#0057D2"}}
             >
-                <Text className="text-white text-lg font-bold">Sign Up</Text>
+                <Text className="text-white text-lg font-bold">Sign Up!</Text>
             </TouchableOpacity>
         </View>
     )
