@@ -125,7 +125,6 @@ export default function PostEvent({ visible, onClose }: PostEventProps) {
             onChangeText={setLocation}
             placeholder="Enter location here"
             placeholderTextColor="#4B5563"  // Darker placeholder text
-            keyboardType="numeric"
             className="border border-gray-300 rounded-lg p-4 text-base"
             />
         </View>
