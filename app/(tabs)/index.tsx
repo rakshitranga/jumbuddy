@@ -35,7 +35,6 @@ export default function Index() {
           const data = await AirtableService.getUserById(userId);
           if (data && data.length > 0) {
             const userData = mapAirtableUser(data[0]);
-            console.log(userData);
             setUser(userData);
           } else {
             console.log("No user found");

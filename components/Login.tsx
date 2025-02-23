@@ -17,11 +17,9 @@ export default function Login(props: loginProps) {
     const handleLogin = async (username: string, password: string) => {
         try {
             const data = await AirtableService.getUserByNameAndPassword(username, password);
-            console.log("Returned data:", data);
             
             // Check if data and data.fields exist
             if (data && data[0].fields && data[0].fields.id) {
-              console.log("User ID:", data[0].fields.id);
               setLoggedIn("true");
               await AsyncStorage.setItem("logged_in", "true");
               await AsyncStorage.setItem("user_id", data[0].fields.id);

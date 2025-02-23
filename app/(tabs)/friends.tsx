@@ -1,9 +1,29 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { styled } from 'nativewind';
+import AirtableService from "../../airtable";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { User } from '@/components/mapAirtableUser';
 
 const FriendsScreen = () => {
+  const [userFriends, setUserFriends] = useState([]);
+
+  useEffect(() => {
+    const fetchUserFriends = async () => {
+      const userId = await AsyncStorage.getItem("user_id");
+      const data = await AirtableService.getUserById(userId);
+      console.log(userId);
+      console.log(data[0].fields.friendids);
+      const friends = await AirtableService.getUsersByFriendsIds(data[0].fields.friendids);
+      console.log(friends.records);
+      setUserFriends(friends.records);
+    }
+    fetchUserFriends(); 
+
+  }, []);
+
+
   return (
     <SafeAreaView className="bg-white flex-1">
       <ScrollView className="p-4">

@@ -28,7 +28,7 @@ const AirtableService = {
 
   getUserById: async(id) => {
     try {
-      const response = await axios.get(`${AIRTABLE_URL}?filterByFormula=(%7Bid%7D%3D'${id}')`, {
+      const response = await axios.get(`${AIRTABLE_URL}?filterByFormula=({id}='${id}')`, {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
           "Content-Type": "application/json",
@@ -59,18 +59,19 @@ const AirtableService = {
   getUsersByFriendsIds: async(friendids) => {
     idArray = friendids.split(",");
     formula = "OR(";
-    for (let i = 0; i < idArray.length, i++) {
-        formula += "{id}='" + idArray[i] + "'";
+    for (let i = 0; i < idArray.length; i++) {
+        formula += "{id}=\'" + idArray[i] + "\'" + (i == idArray.length - 1 ? "" : ",");
     }
-    formula+= ")";
+    formula += ")";
+    let url = `${AIRTABLE_URL}?filterByFormula=${formula}`;
     try {
-        const response = await axios.get(`${AIRTABLE_URL}?filterByFormula=${formula})`, {
+        const response = await axios.get(url, {
           headers: {
             Authorization: `Bearer ${API_TOKEN}`,
             "Content-Type": "application/json",
           },
         });
-        return response.data.records;
+        return response.data;
     } catch (error) {
         console.error("Error fetching Airtable records:", error);
         return [];
