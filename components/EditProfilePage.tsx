@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import { Text, Image, View, TouchableOpacity, SafeAreaView, ScrollView, TextInput, Alert } from "react-native";
 import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+
 
 export default function SetProfilePage() {
     const [page, setPage] = useState(1);
@@ -12,6 +14,8 @@ export default function SetProfilePage() {
     const [interestInput, setInterestInput] = useState('');
     const [userInterests, setUserInterests] = useState<string[]>([]);
     const popularInterests = ['gym', 'art', 'food', 'going out'];
+
+    const router = useRouter();
     
     const handleAddClass = () => {
       if (classInput.trim() && !userClasses.includes(classInput.toUpperCase())) {
@@ -38,6 +42,7 @@ export default function SetProfilePage() {
         setPage(page + 1);
       } else {
         //TODO: redirect to the home page
+        router.replace('/(tabs)');
       }
     };
 

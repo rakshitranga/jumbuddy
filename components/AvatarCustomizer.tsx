@@ -4,10 +4,10 @@ import { Picker } from "@react-native-picker/picker";
 
 interface AvatarOptions {
   seed: string;
-  eyes: string;
-  hair: string;
-  mouth: string;
-  skinColor: string;
+  eyes?: string;
+  hair?: string;
+  mouth?: string;
+  skinColor?: string;
 }
 
 interface AvatarCustomizerProps {
@@ -24,8 +24,8 @@ const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({ avatarOptions, setA
   };
 
   const updateAvatar = (key: keyof AvatarOptions, value: string) => {
-    setAvatarOptions((prev: any) => ({ ...prev, [key]: value }));
-  };
+    setAvatarOptions((prev) => ({ ...prev, [key]: value || "defaultValue" }));
+  };  
 
   return (
     <View className="bg-white p-4 rounded-lg shadow-md">

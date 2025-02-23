@@ -1,17 +1,6 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
-
-// update according to database
-interface User {
-  profileImage: string;
-  name: string;
-  gradYear: string;
-  major: string;
-  classes: string[];
-  interests: string[];
-  lookingFor: string[];
-  bio: string;
-}
+import { User } from "@/components/mapAirtableUser";
 
 interface PersonCardProps {
   user: User;
@@ -29,8 +18,8 @@ export default function PersonCard({ user }: PersonCardProps) {
         />
         <View className="ml-4 flex-1">
           <Text className="text-xl font-bold">{user.name}</Text>
-          <Text className="text-gray-600"> {user.major}</Text>
-          <Text className="text-gray-600"> Class of {user.gradYear}</Text>
+          <Text className="text-gray-600"> Major: {user.major}</Text>
+          <Text className="text-gray-600"> Class of {user.gradyear}</Text>
         </View>
       </View>
 
@@ -39,7 +28,7 @@ export default function PersonCard({ user }: PersonCardProps) {
         {/* Classes */}
         <Text className="text-lg font-semibold mb-1">Classes</Text>
         <View className="flex-row flex-wrap">
-          {user.classes.map((course, idx) => (
+          {user.classes.split(',').map((course, idx) => (
             <View
               key={`class-${idx}`}
               className="bg-[#3B79BA] rounded-full px-3 py-1 m-1 shadow"
@@ -52,7 +41,7 @@ export default function PersonCard({ user }: PersonCardProps) {
         {/* Interests */}
         <Text className="text-lg font-semibold mt-4 mb-1">Interests</Text>
         <View className="flex-row flex-wrap">
-          {user.interests.map((interest, idx) => (
+          {user.interests.split(',').map((interest, idx) => (
             <View
               key={`interest-${idx}`}
               className="bg-gray-500 rounded-full px-3 py-1 m-1 shadow"
@@ -62,7 +51,7 @@ export default function PersonCard({ user }: PersonCardProps) {
           ))}
         </View>
 
-        {/* Looking For */}
+        {/* Looking For
         <Text className="text-lg font-semibold mt-4 mb-1">Looking For</Text>
         <View className="flex-row flex-wrap">
           {user.lookingFor.map((item, idx) => (
@@ -73,7 +62,7 @@ export default function PersonCard({ user }: PersonCardProps) {
               <Text className="text-white text-sm">{item}</Text>
             </View>
           ))}
-        </View>
+        </View> */}
       </View>
 
       {/* Description Section */}

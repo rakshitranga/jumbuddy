@@ -13,6 +13,7 @@ export default function Login(props: loginProps) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     // const [loggedIn, setLoggedIn] = useState(false);
+    const [selectedTab, setSelectedTab] = useState("login");
 
     const handleLogin = async (username: string, password: string) => {
         try {

@@ -1,36 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import PersonCard from '@/components/PersonCard';
+import { User, mapAirtableUser } from "@/components/mapAirtableUser";
+import AirtableService from "../../airtable";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import '../../global.css';
-
-// replace with database info later 
-const users = [
-  {
-    profileImage: 'https://example.com/image1.jpg',
-    name: 'Alice',
-    gradYear: '2027',
-    major: 'Science',
-    classes: ['Math', 'English'],
-    interests: ['Coding', 'Reading'],
-    lookingFor: ['Study Partner'],
-    bio: 'Open to joining a science club and study groups.',
-  },
-  {
-    profileImage: 'https://example.com/image2.jpg',
-    name: 'Bob',
-    gradYear: '2028',
-    major: 'History',
-    classes: ['History', 'Art'],
-    interests: ['Photography', 'Debate'],
-    lookingFor: ['Discussion Partner'],
-    bio: 'Looking to share ideas on historical topics.',
-  },
-];
 
 export default function JumBuddyScreen() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [users, setUsers] = useState<User[] | []>([]);
 
+  useEffect(() => {
+    const fetchJumbuddies = async () => {
+      const userId = await AsyncStorage.getItem("user_id");
+      const data = await AirtableService.getUserById(userId);
+      const allUsers = await AirtableService.getUsersExceptFriendsIds(data[0].fields.friendids + "," + userId);
+
+      // converting records to User objects 
+      let allUsersArr: User[] = []; 
+      for (let i in allUsers.records) {
+          let user = mapAirtableUser(allUsers.records[i]);
+          allUsersArr.push(user); 
+      }
+
+      setUsers(allUsersArr);
+    }
+    fetchJumbuddies(); 
+  }, []);
+
+  
   return (
     <SafeAreaView className="bg-white flex-1">
       <ScrollView className="bg-white flex-1 p-4">
