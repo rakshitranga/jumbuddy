@@ -100,7 +100,7 @@ export default function Index() {
     </View>
   ) : (
     <SafeAreaView>
-      <AuthScreen setLoggedIn={setLoggedIn} setUserId={setUserId}></AuthScreen>
+      <Login setLoggedIn={setLoggedIn} setUserId={setUserId}></Login>
     </SafeAreaView>
   );
 }
