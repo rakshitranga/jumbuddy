@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator, SafeAreaView } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, SafeAreaView, ScrollView } from "react-native";
 import AirtableService from "../../airtable";
 import EventCard from "../../components/EventCard";
+import SetProfilePage from "../../components/EditProfilePage";
 
 const RecordList = () => {
   const [records, setRecords] = useState([]);
@@ -9,7 +10,7 @@ const RecordList = () => {
 
   useEffect(() => {
     const fetchRecords = async () => {
-      const data = await AirtableService.getRecords();
+      const data = await AirtableService.getUserById('P001');
       setRecords(data);
       setLoading(false);
     };
@@ -20,9 +21,20 @@ const RecordList = () => {
   if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white flex-1">
+      <ScrollView className="p-4">
       <View>
-      <EventCard
+        <SetProfilePage></SetProfilePage>
+    </View>
+    </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default RecordList;
+
+/**
+ * <EventCard
               date = "09"
               month = "March"
               time = "10:00am - 14:00pm"
@@ -36,9 +48,4 @@ const RecordList = () => {
           <Text className="text-white">{item.fields?.Name || "No Name"}</Text>
         )}
       />
-    </View>
-    </SafeAreaView>
-  );
-};
-
-export default RecordList;
+ */

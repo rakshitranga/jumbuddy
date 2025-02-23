@@ -29,7 +29,7 @@ const EventCard: React.FC<EventCardProps> = ({date, month, time, title, location
                 ></Image> */}
             </View>
             {/* right side of event card */}
-            <View className="flex-1 ml-3">
+            <View className="flex-1 ml-6">
                 <Text className="text-lg font-bold">{title}</Text>
                 <View className="flex-row items-center mt-1">
                     {/* TODO: icon of a map marker */}

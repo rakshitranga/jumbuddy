@@ -4,37 +4,65 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import '../../global.css';
 import EventCard from "../../components/EventCard";
 import Login from "../../components/Login";
+import AirtableService from "../../airtable";
+import { User, mapAirtableUser } from "@/components/mapAirtableUser";
 
 export default function Index() {
   // const imagePlaceholder = require("../../assets/images/imagePlaceholder.png");
   const firstName = "Emily";
+  const [loggedIn, setLoggedIn] = useState("false");
+  const [userId, setUserId] = useState("");
+  const [user, setUser] = useState<User | null>(null); 
 
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userId, setUserId] = useState("false");
-
+  // checks global state and updates local state 
   const retrieveLoggedInInfo = async () => {
     try {
-      const value = await AsyncStorage.getItem('logged_in')
-      if(value !== null) {
-        setLoggedIn(true);
-      } else{
-        setLoggedIn(false)
-      }
+      const value = await AsyncStorage.getItem('logged_in');
+      if(value == "true") {
+        setLoggedIn("true")
+      } 
+      return value; 
+
     } catch(e) {
       return false;
     }
   }
 
   useEffect(() => {
-    console.log(loggedIn);
+    retrieveLoggedInInfo(); 
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn == "true") {
+      const fetchUser = async () => {
+        try {
+          const data = await AirtableService.getUserById(userId);
+          if (data && data.length > 0) {
+            const userData = mapAirtableUser(data[0]);
+            console.log(userData);
+            setUser(userData);
+          } else {
+            console.log("No user found");
+          }
+        } catch (e) {
+          console.error("Error fetching user:", e);
+        }
+      }
+      fetchUser(); 
+    }
   }, [loggedIn]);
 
-  retrieveLoggedInInfo();
+
+  const logOut = () => {
+    setLoggedIn("false");
+    AsyncStorage.setItem('logged_in', 'false');
+  }
+
 
   return (
-    loggedIn ? (
+    loggedIn == "true" && user ? (
       <SafeAreaView className="bg-white flex-1">
-        <ScrollView className="bg-white flex-1 p-4">
+        <ScrollView className="p-4">
         <View>
         {/* image & welcome */}
         <View className="w-full bg-blue-200 p-6 rounded-b-3xl items-center flex flex-row items-center space-x-3">
@@ -43,7 +71,7 @@ export default function Index() {
           className = "w-24 h-24 rounded-full"
           ></Image> */}
         <View>
-          <Text className="text-lg font-bold text-gray-900">Hi, {firstName}</Text>
+          <Text className="text-lg font-bold text-gray-900">Hi {user.name}</Text>
           <Text className="text-sm text-gray-600">Make a new jumbuddy today!</Text>
         </View>
       </View>
@@ -62,11 +90,13 @@ export default function Index() {
             </Text> */}
           </View>
       </View>
+      <TouchableOpacity className="bg-[#3B79BA] text-white">
+          <Text className="text-white" onPress={(logOut)}>Log Out</Text>
+      </TouchableOpacity> 
       </ScrollView>
       </SafeAreaView> ) : (
       <SafeAreaView>
         <View>
-          <Text className="text-white">Login</Text>
           <Login setLoggedIn={(setLoggedIn)} setUserId={(setUserId)}></Login>
         </View>
       </SafeAreaView>

@@ -1,76 +1,144 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, View, Text, Image } from 'react-native';
-import { styled } from 'nativewind';
-
-// ✅ Styled components for Tailwind compatibility
-const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledImage = styled(Image);
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, View, Text, Image, TouchableOpacity  } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
+  //avatar customise scene
+  const[avatarOptions, setAvatarOptions]= useState({
+      seed: "Emily",
+      backgroundColor: "ffffff", 
+      eyes: "variant01", 
+      mouth: "variant01", 
+      accessories: "variant02"
+
+  });
+
   const firstName = 'Emily';
+  const lastName = "Teh";
   const buddies = 21;
   const activitiesJoined = 6;
   const classes = ['EN1', 'PHY11', 'MATH34', 'CS11'];
   const interests = ['Gym', 'Photography', 'Economics', 'Food'];
   const gradYear = 2028;
 
-  // const avatarUrl = ;
+  //function to update avatar options 
+  
+  const updateAvatarOption = (option: string, value: any) => {
+    setAvatarOptions((prevOptions) => ({
+      ...prevOptions, 
+      [option]: value, 
+
+    })); 
+  };
+
+  const avatarUrl = `https://api.dicebear.com/9.x/adventurer/png?seed=${avatarOptions.seed}&eyes=${avatarOptions.eyes}&mouth=${avatarOptions.mouth}&accessories=${avatarOptions.accessories}`;
+
 
   return (
     <SafeAreaView className="bg-white flex-1">
       <ScrollView className="p-4">
+        {/* Header */}
+        <View className="flex-row justify-between items-center py-4">
+          <Feather name="menu" size={24} color="black" />
+            <Text className="text-lg font-bold text-blue-600"> Profile</Text>
+          <Feather name="bell" size={24} color="black" />
+        </View>
+
         {/* Profile Avatar and Info */}
-        <StyledView className="items-center mb-6">
-          <StyledImage
-            src="https://api.dicebear.com/9.x/adventurer/png?seed=Emily"
-            alt="avatar"
-            className="w-32 h-32 mb-4"
+        <View className="items-center mb-6 relative">
+          {/*Avatar Image*/}
+          <Image
+            source = {{uri: avatarUrl}}
+            className="w-32 h-32 mb-4 rounded-full"
             resizeMode="cover"
           />
-          <StyledText className="text-3xl font-bold">Hi {firstName}</StyledText>
-          <StyledText className="text-xl text-gray-600">Class of {gradYear}</StyledText>
-          <StyledView className="flex-row space-x-4 mt-2">
-            <StyledText className="text-gray-600">Buddies: {buddies}</StyledText>
-            <StyledText className="text-gray-600">Activities Joined: {activitiesJoined}</StyledText>
-          </StyledView>
-        </StyledView>
+          {/*Edit Avatar Button */}
+          <TouchableOpacity className = "absolute right-0 bottom-4 bg-blue-500 p-2 rounded-full shadow-md">
+            <Feather name = "edit-3" size ={18} color = "white" />
+          </TouchableOpacity>
+          
+          <View>
+            <Text className="text-3xl font-bold">{firstName+" "+lastName}</Text>
+            {/* TODO: put an edit symbol & link to edit profile page */}
+          </View>
+          <Text className="text-xl text-gray-600">Class of {gradYear}</Text>
+          <View className="flex-row space-x-4 mt-2">
+            <Text className="text-gray-600">Buddies: {buddies}</Text>
+            <Text className="text-gray-600">Activities Joined: {activitiesJoined}</Text>
+          </View>
+        </View>
+
+        {/* Avatar Customization */}
+        <View className = "p-4 bg-gray-100 rounded-lg shadow-md">
+          <Text className="text-lg font-bold mb-2">Customize Your Avatar</Text>
+          {/* Eyes Customization */}
+          <Text className = "text-md font semi-bold mt-2">Eyes</Text>
+          <Picker
+            selectedValue={avatarOptions.eyes}
+            onValueChange={(value: any) => updateAvatarOption("eyes", value)}
+            className="bg-white rounded-md"
+          >
+            <Picker.Item label="Variant 01" value="variant01" />
+            <Picker.Item label="Variant 02" value="variant02" />
+            <Picker.Item label="Variant 03" value="variant03" />
+          </Picker>
+
+          {/* Mouth Customization */}
+          <Text className="text-md font-semibold mt-2">Mouth</Text>
+          <Picker selectedValue={avatarOptions.mouth} onValueChange={(value) => updateAvatarOption("mouth", value)} className="bg-white rounded-md">
+            <Picker.Item label="Variant 01" value="variant01" />
+            <Picker.Item label="Variant 02" value="variant02" />
+            <Picker.Item label="Variant 03" value="variant03" />
+          </Picker>
+
+          {/* Accessories Customization */}
+          <Text className="text-md font-semibold mt-2">Accessories</Text>
+          <Picker selectedValue={avatarOptions.accessories} onValueChange={(value) => updateAvatarOption("accessories", value)} className="bg-white rounded-md">
+            <Picker.Item label="Variant 01" value="variant01" />
+            <Picker.Item label="Variant 02" value="variant02" />
+            <Picker.Item label="Variant 03" value="variant03" />
+          </Picker>
+        </View>
 
         {/* Classes */}
-        <StyledView className="mb-6">
-          <StyledText className="text-lg font-semibold mb-2">Classes</StyledText>
-          <StyledView className="flex-row flex-wrap">
+        <View className="mb-6">
+          <Text className="text-lg font-semibold mb-2">Classes</Text>
+          <View className="flex-row flex-wrap">
             {classes.map((course, index) => (
-              <StyledView
+              <View
                 key={index}
                 className="bg-gray-500 rounded-full p-3 m-1 shadow-md"
               >
-                <StyledText className="text-white text-sm">{course}</StyledText>
-              </StyledView>
+                <Text className="text-white text-sm">{course}</Text>
+              </View>
             ))}
-          </StyledView>
+          </View>
 
-          <StyledText className="text-lg font-semibold mt-4 mb-2">Interests</StyledText>
-          <StyledView className="flex-row flex-wrap">
+          <Text className="text-lg font-semibold mt-4 mb-2">Interests</Text>
+          <View className="flex-row flex-wrap">
             {interests.map((interest, index) => (
-              <StyledView
+              <View
                 key={index}
                 className="bg-[#3B79BA] rounded-full p-3 m-1 shadow-md"
               >
-                <StyledText className="text-white text-sm">{interest}</StyledText>
-              </StyledView>
+                <Text className="text-white text-sm">{interest}</Text>
+              </View>
             ))}
-          </StyledView>
-        </StyledView>
+          </View>
+        </View>
 
         {/* Upcoming Events */}
-        <StyledView className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <StyledText className="text-xl font-bold mb-2">Upcoming Events</StyledText>
-          <StyledText className="text-gray-600">
+        <View className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <Text className="text-xl font-bold mb-2">Upcoming Events</Text>
+          <Text className="text-gray-600">
             No upcoming events at the moment.
-          </StyledText>
-        </StyledView>
+          </Text>
+        </View>
       </ScrollView>
+
+
     </SafeAreaView>
   );
 };

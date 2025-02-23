@@ -23,14 +23,14 @@ export default function PersonCard({ user }: PersonCardProps) {
       {/* profile photo and name */}
       <View className="flex-row items-center">
         <Image
-          source={{ uri: user.profileImage }}
+          src={user.profileImage}
           className="w-20 h-20 rounded-full"
+          resizeMode="cover"
         />
         <View className="ml-4 flex-1">
           <Text className="text-xl font-bold">{user.name}</Text>
-          <Text className="text-gray-600">
-            {user.grade} • {user.major}
-          </Text>
+          <Text className="text-gray-600"> {user.major}</Text>
+          <Text className="text-gray-600"> Class of {user.gradYear}</Text>
         </View>
       </View>
 
@@ -42,7 +42,7 @@ export default function PersonCard({ user }: PersonCardProps) {
           {user.classes.map((course, idx) => (
             <View
               key={`class-${idx}`}
-              className="bg-[#3B79BA]rounded-full px-3 py-1 m-1 shadow"
+              className="bg-[#3B79BA] rounded-full px-3 py-1 m-1 shadow"
             >
               <Text className="text-white text-sm">{course}</Text>
             </View>

@@ -1,9 +1,10 @@
 import React, {useState} from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AirtableService from "../airtable";
 
 interface loginProps {
-    setLoggedIn: (loggedin: boolean) => void;
+    setLoggedIn: (loggedin: string) => void;
     setUserId: (userId: string) => void;
 }
 
@@ -13,29 +14,43 @@ export default function Login(props: loginProps) {
     const [password, setPassword] = useState("");
     // const [loggedIn, setLoggedIn] = useState(false);
 
-    const handleLogin = () => {
-        console.log(`Username
-        : ${username}   Password: ${password}`); 
-        setLoggedIn(true);
-        AsyncStorage.setItem("logged_in", "true")
-        setUserId("1234");
+    const handleLogin = async (username: string, password: string) => {
+        try {
+            const data = await AirtableService.getUserByNameAndPassword(username, password);
+            console.log("Returned data:", data);
+            
+            // Check if data and data.fields exist
+            if (data && data[0].fields && data[0].fields.id) {
+              console.log("User ID:", data[0].fields.id);
+              setLoggedIn("true");
+              await AsyncStorage.setItem("logged_in", "true");
+              await AsyncStorage.setItem("user_id", data[0].fields.id);
+              setUserId(data[0].fields.id);
+            } else {
+              console.log("Unexpected data structure:", data);
+            }
+        } catch (error) {
+        console.error("Login error:", error);
+        }
     };
 
     return (
         <View>
-            <Text>Login</Text>
+            <Text className="text-white text-bold text-xl">Login</Text>
             <TextInput
+                className="text-black p-3 bg-white"
                 placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
             />
             <TextInput
+                className="text-black p-3 bg-white"
                 placeholder="Password"
                 value={password}
                 onChangeText={setPassword}
             />
-            <TouchableOpacity onPress={handleLogin}>
-                <Text>Login</Text>
+            <TouchableOpacity onPress={() => {handleLogin(username, password)}}>
+                <Text className="text-white bg-blue-200 p-3">Login</Text>
             </TouchableOpacity>
         </View>
     )

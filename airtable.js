@@ -26,6 +26,36 @@ const AirtableService = {
     }
   },
 
+  getUserById: async(id) => {
+    try {
+      const response = await axios.get(`${AIRTABLE_URL}?filterByFormula=(%7Bid%7D%3D'${id}')`, {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data.records;
+    } catch (error) {
+      console.error("Error fetching Airtable records:", error);
+      return [];
+    }
+  },
+
+  getUserByNameAndPassword: async(name, password) => {
+    try {
+        const response = await axios.get(`${AIRTABLE_URL}?filterByFormula=AND({username}='${name}',{password}='${password}')`, {
+          headers: {
+            Authorization: `Bearer ${API_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        });
+        return response.data.records;
+    } catch (error) {
+        console.error("Error fetching Airtable records:", error);
+        return [];
+    }
+  },
+
   /**
    * Add a new record to Airtable
    * @param {Object} fields - Fields for the new record
