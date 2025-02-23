@@ -104,6 +104,7 @@ const AirtableService = {
           "Content-Type": "application/json",
         },
       });
+      console.log(response.data.records[0].id)
       return response.data.records;
     } catch (error) {
       console.error("Error fetching Airtable records:", error);
@@ -205,7 +206,7 @@ const AirtableService = {
       const url = `${AIRTABLE_URL}/${recordId}`;
       const response = await axios.patch(
         url,
-        { fields },
+        { fields: fields },
         {
           headers: {
             Authorization: `Bearer ${API_TOKEN}`,

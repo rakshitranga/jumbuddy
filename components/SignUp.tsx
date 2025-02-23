@@ -24,8 +24,15 @@ export default function SignUp(props: loginProps) {
                 'username': username,
                 'password': password
             }
+            // returns fields, including userId
             const result = await AirtableService.addRecord(fields);
-            console.log(result);
+            const userId = result.records[0].fields.id.toString();
+            console.log(userId);
+            
+            setUserId(userId); 
+            setLoggedIn("true");
+            await AsyncStorage.setItem("logged_in", "true");
+            await AsyncStorage.setItem("user_id", userId);
 
         } catch (error) {
             console.error("Signup error:", error);
@@ -34,33 +41,53 @@ export default function SignUp(props: loginProps) {
 
     return (
         <View>
-            <Text className="text-white text-bold text-xl">Sign up</Text>
-            <TextInput
-                className="text-black p-3 bg-white"
-                placeholder="Name (First Last)"
+            <View className="mb-6"> 
+              <Text className="text-lg font-semibold mb-2">Name: </Text>
+              <TextInput
                 value={name}
                 onChangeText={setName}
-            />
-            <TextInput
-                className="text-black p-3 bg-white"
-                placeholder="Username"
-                value={username}
+                placeholder="Enter your name. (First Last)"
+                placeholderTextColor="#4B5563"  // Darker placeholder text
+                className="border border-gray-300 rounded-lg p-4 text-base"
+              />
+            </View>
+            <View className="mb-6"> 
+              <Text className="text-lg font-semibold mb-2">Tufts email: </Text>
+              <TextInput
+                value={email}
                 onChangeText={setEmail}
-            />
-            <TextInput
-                className="text-black p-3 bg-white"
-                placeholder="Username"
+                placeholder="Enter your email."
+                placeholderTextColor="#4B5563"  // Darker placeholder text
+                className="border border-gray-300 rounded-lg p-4 text-base"
+              />
+            </View>
+            <View className="mb-6"> 
+              <Text className="text-lg font-semibold mb-2">Username: </Text>
+              <TextInput
                 value={username}
                 onChangeText={setUsername}
-            />
-            <TextInput
-                className="text-black p-3 bg-white"
-                placeholder="Password"
+                placeholder="Create your username."
+                placeholderTextColor="#4B5563"  // Darker placeholder text
+                className="border border-gray-300 rounded-lg p-4 text-base"
+              />
+            </View>
+
+            <View className="mb-6"> 
+              <Text className="text-lg font-semibold mb-2">Password: </Text>
+              <TextInput
                 value={password}
                 onChangeText={setPassword}
-            />
-            <TouchableOpacity onPress={() => {handleSignUp(name, email, username, password)}}>
-                <Text className="text-white bg-blue-200 p-3">Sign Up</Text>
+                placeholder="Set your password."
+                placeholderTextColor="#4B5563"  // Darker placeholder text
+                className="border border-gray-300 rounded-lg p-4 text-base"
+              />
+            </View>
+            <TouchableOpacity 
+                onPress={() => {handleSignUp(name, email, username, password)}}
+                className="py-4 rounded-lg items-center"
+                style={{ backgroundColor: "#0057D2"}}
+            >
+                <Text className="text-white text-lg font-bold">Sign Up</Text>
             </TouchableOpacity>
         </View>
     )

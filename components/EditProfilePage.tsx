@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 
 export default function SetProfilePage() {
     const [page, setPage] = useState(1);
-    const [name, setName] = useState('');
+    const [name, setName] = useState(''); 
     const [graduationYear, setGraduationYear] = useState('');
     const [major, setMajor] = useState('');
     const [classInput, setClassInput] = useState('');

@@ -8,6 +8,7 @@ interface AvatarOptions {
   hair?: string;
   mouth?: string;
   skinColor?: string;
+  hairColor?: string; 
 }
 
 interface AvatarCustomizerProps {
@@ -18,9 +19,10 @@ interface AvatarCustomizerProps {
 const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({ avatarOptions, setAvatarOptions }: AvatarCustomizerProps) => {
   const features = {
     eyes: ["variant01", "variant02", "variant03", "variant04", "variant05"],
-    hair: ["short", "long", "curly", "bald", "buzz"],
-    mouth: ["smile", "open", "serious", "sad", "grin"],
-    skinColor: ["light", "tanned", "brown", "dark", "pale"],
+    hair: ["long01", "short01", "long16", "long09", "short11", "short17"],
+    mouth: ["variant01", "variant02", "variant03", "variant04", "variant05"],
+    skinColor: ["9e5622", "763900", "ecad80", "f2d3b1"],
+    hairColor: ["0e0e0e", "6a4e35", "562306", "e5d7a3"]
   };
 
   const updateAvatar = (key: keyof AvatarOptions, value: string) => {

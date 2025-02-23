@@ -12,7 +12,6 @@ export default function Login(props: loginProps) {
     const {setLoggedIn, setUserId} = props;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    // const [loggedIn, setLoggedIn] = useState(false);
     const [selectedTab, setSelectedTab] = useState("login");
 
     const handleLogin = async (username: string, password: string) => {
@@ -23,8 +22,8 @@ export default function Login(props: loginProps) {
             if (data && data[0].fields && data[0].fields.id) {
               setLoggedIn("true");
               await AsyncStorage.setItem("logged_in", "true");
-              await AsyncStorage.setItem("user_id", data[0].fields.id);
-              setUserId(data[0].fields.id);
+              await AsyncStorage.setItem("user_id", data[0].fields.id.toString());
+              setUserId(data[0].fields.id.toString());
             } else {
               console.log("Unexpected data structure:", data);
             }
@@ -35,21 +34,32 @@ export default function Login(props: loginProps) {
 
     return (
         <View>
-            <Text className="text-white text-bold text-xl">Login</Text>
-            <TextInput
-                className="text-black p-3 bg-white"
-                placeholder="Username"
+            <View className="mb-6"> 
+              <Text className="text-lg font-semibold mb-2">Username: </Text>
+              <TextInput
                 value={username}
                 onChangeText={setUsername}
-            />
-            <TextInput
-                className="text-black p-3 bg-white"
-                placeholder="Password"
+                placeholder="Enter your username."
+                placeholderTextColor="#4B5563"  // Darker placeholder text
+                className="border border-gray-300 rounded-lg p-4 text-base"
+              />
+            </View>
+            <View className="mb-6"> 
+              <Text className="text-lg font-semibold mb-2">Password: </Text>
+              <TextInput
                 value={password}
                 onChangeText={setPassword}
-            />
-            <TouchableOpacity onPress={() => {handleLogin(username, password)}}>
-                <Text className="text-white bg-blue-200 p-3">Login</Text>
+                placeholder="Enter your password."
+                placeholderTextColor="#4B5563"  // Darker placeholder text
+                className="border border-gray-300 rounded-lg p-4 text-base"
+              />
+            </View>
+            <TouchableOpacity 
+                onPress={() => {handleLogin(username, password)}}
+                className="py-4 rounded-lg items-center"
+                style={{ backgroundColor: "#0057D2"}}
+            >
+                <Text className="text-white text-lg font-bold">Login</Text>
             </TouchableOpacity>
         </View>
     )

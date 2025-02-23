@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from "react-native";
+import { Text, View, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, Image } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '../../global.css';
 import EventCard from "../../components/EventCard";
 import Login from "../../components/Login";
-import AuthScreen from "../../components/AuthScreen";
+import SignUp from "@/components/SignUp";
 import AirtableService from "../../airtable";
+import jumbuddylogo from "@/assets/images/jumbuddylogo.png";
 import { User, mapAirtableUser } from "@/components/mapAirtableUser";
 import { format, addDays } from "date-fns";
 
@@ -16,6 +17,9 @@ export default function Index() {
   const [userId, setUserId] = useState("");
   const [user, setUser] = useState<User | null>(null);
   const [dates, setDates] = useState<string[]>([]);
+
+  // auth screen
+  const [activeTab, setActiveTab] = useState("login");
 
   useEffect(() => {
     const today = new Date();
@@ -56,7 +60,7 @@ export default function Index() {
   const logOut = () => {
     setLoggedIn("false");
     AsyncStorage.setItem('logged_in', 'false');
-  };
+  }; 
 
   return loggedIn == "true" && user ? (
     <View className="flex-1 bg-white">
@@ -99,8 +103,48 @@ export default function Index() {
       </SafeAreaView>
     </View>
   ) : (
-    <SafeAreaView>
-      <Login setLoggedIn={setLoggedIn} setUserId={setUserId}></Login>
-    </SafeAreaView>
+    <SafeAreaView className="flex-1 bg-white">
+    {/* Fixed Header */}
+    <View className="px-2">
+      <View className="justify-center items-center">
+        <View className="justify-center items-center mt-3">
+          <Image 
+            source={jumbuddylogo} 
+            className="w-40 h-40"
+            resizeMode="contain"
+          />
+        </View>
+        <View className="m-2"> 
+          <Text className="text-3xl font-bold">
+            Welcome to <Text className="text-blue-600">JumBuddy</Text>
+          </Text>
+        </View>
+        <View className="flex-row space-x-8 mb-4">
+          <TouchableOpacity onPress={() => setActiveTab("login")}>
+            <Text className={`text-xl ${activeTab === "login" ? "text-blue-600" : "text-black"}`}>
+              Login
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveTab("signup")}>
+            <Text className={`text-xl ${activeTab === "signup" ? "text-blue-600" : "text-black"}`}>
+              Sign Up
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+
+    {/* Scrollable Form Content */}
+    <ScrollView className="flex-1 px-4">
+      <View className="pb-40">
+      {activeTab == "login" ? (
+        <Login setLoggedIn={setLoggedIn} setUserId={setUserId} />
+      ) : (
+        <SignUp setLoggedIn={setLoggedIn} setUserId={setUserId} />
+      )}
+      </View>
+    </ScrollView>
+  </SafeAreaView>
+
   );
 }

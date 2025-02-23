@@ -7,12 +7,15 @@ interface PersonCardProps {
 }
 
 export default function PersonCard({ user }: PersonCardProps) {
+  const avatarUrl = `https://api.dicebear.com/9.x/adventurer/png?seed=${encodeURIComponent(user.name)}&glassesProbability=0`;
+  console.log("Avatar URL for", user.name, ":", avatarUrl); 
+
   return (
     <View className="bg-white rounded-lg shadow p-4 my-4">
       {/* profile photo and name */}
       <View className="flex-row items-center">
         <Image
-          src={user.profileImage}
+          source={{ uri: avatarUrl }}
           className="w-20 h-20 rounded-full"
           resizeMode="cover"
         />

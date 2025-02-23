@@ -10,6 +10,7 @@ export interface User {
     classes: string; 
     bio: string; 
     friendrequests: string; 
+    avatarlink: string;
   }
 
 export function mapAirtableUser(record: any): User {

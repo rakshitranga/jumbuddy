@@ -14,22 +14,24 @@ interface AvatarOptions {
   hair?: string;
   mouth?: string;
   skinColor?: string;
+  hairColor?: string;
 }
 
 const ProfileScreen: React.FC = () => {
   const [user, setUser] = useState<User | null>(null); 
+  const [uniqueId, setUniqueId] = useState("");
   const [loading, setLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [avatarOptions, setAvatarOptions] = useState<AvatarOptions>({
     seed: "Emily",
     eyes: "variant01",      // Default value
-    hair: "short",          // Default value
-    mouth: "smile",         // Default value
-    skinColor: "light",     // Default value
+    hair: "long01",          // Default value
+    mouth: "variant01",         // Default value
+    skinColor: "f2d3b1",     // Default value
+    hairColor: "0e0e0e" 
   });
   
   
-
   const firstName = 'Emily';
   const lastName = "Teh";
   const buddies = 21;
@@ -43,6 +45,10 @@ const ProfileScreen: React.FC = () => {
       try {
         const userId = await AsyncStorage.getItem("user_id"); 
         const data = await AirtableService.getUserById(userId);
+        setUniqueId(data[0].id)
+        setAvatarUrl(data[0].fields.avatarlink);
+
+        
 
         if (data && data.length > 0) {
           const userData = mapAirtableUser(data[0]);
@@ -63,21 +69,35 @@ const ProfileScreen: React.FC = () => {
 
 
   useEffect(() => {
-    const fetchAvatar = async () => {
-      try {
-        let url = `https://api.dicebear.com/9.x/adventurer/png?seed=Emily&eyes=variant01&hair=short&mouth=smile&skinColor=variant01`;
+    const fetchAvatar = () => {
+      let url = `https://api.dicebear.com/9.x/adventurer/png?seed=${encodeURIComponent(avatarOptions.seed)}&glassesProbability=0`;
 
+      if (avatarOptions.eyes) url += `&eyes=${avatarOptions.eyes}`;
+      if (avatarOptions.hair) url += `&hair=${avatarOptions.hair}`;
+      if (avatarOptions.mouth) url += `&mouth=${avatarOptions.mouth}`;
+      if (avatarOptions.skinColor) url += `&skinColor=${avatarOptions.skinColor}`;
+      if (avatarOptions.hairColor) url += `&hairColor=${avatarOptions.hairColor}`;
 
-        console.log("Fetching avatar from:", url);
+      console.log("Fetching avatar from:", url);
+      setAvatarUrl(url); 
 
-        setAvatarUrl(url); 
-      } catch (error) {
-        console.error("Error updating avatar URL:", error);
-      }
     };
 
+    const updateProfileWithAvatar = async () => {
+      try {
+        if (user) {
+          console.log(user.id)
+          const updated = await AirtableService.updateRecord(uniqueId, { avatarlink: avatarUrl });
+          console.log(updated)
+        }
+      } catch (e) {
+        console.error("Could not update profile")
+      }
+    }
+
     fetchAvatar();
-}, [avatarOptions.seed]); 
+    updateProfileWithAvatar();
+  }, [avatarOptions]);
 
   return (
     <SafeAreaView className="bg-white flex-1">
