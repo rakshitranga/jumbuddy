@@ -22,7 +22,8 @@ export default function SignUp(props: loginProps) {
             const fields = {
                 'email': email, 
                 'username': username,
-                'password': password
+                'password': password,
+                'avatarlink': 'https://api.dicebear.com/9.x/adventurer/svg?seed=Emily'
             }
             // returns fields, including userId
             const result = await AirtableService.addRecord(fields);
@@ -81,7 +82,7 @@ export default function SignUp(props: loginProps) {
                 className="py-4 rounded-lg items-center"
                 style={{ backgroundColor: "#0057D2"}}
             >
-                <Text className="text-white text-lg font-bold">Sign Up!</Text>
+                <Text className="text-white text-lg font-bold">Sign Up</Text>
             </TouchableOpacity>
         </View>
     )

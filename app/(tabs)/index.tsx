@@ -5,22 +5,24 @@ import '../../global.css';
 import EventCard from "../../components/EventCard";
 import Login from "../../components/Login";
 import AirtableService from "../../airtable";
-import { User, mapAirtableUser } from "@/components/mapAirtableUser";
+import { User, Event, mapAirtableEvent, mapAirtableUser } from "@/components/mapAirtable";
 import { format, addDays } from "date-fns";
 import { Feather } from "@expo/vector-icons"; 
-import jumbuddylogo from "@/assets/images/jumbuddylogo.png";
+//import logo from "../assets/images/theLogo.png";
 import SignUp from "@/components/SignUp";
 import PostEvent from "@/components/PostEvent";
-import { ImageBackground } from 'react-native';
 
 const screenHeight = Dimensions.get("window").height;
+// const logo = require("../../assets/images/theLogo.png");
 
 export default function Index() {
   const [loggedIn, setLoggedIn] = useState("");
   const [userId, setUserId] = useState("");
   const [user, setUser] = useState<User | null>(null);
+  const [events, setEvents] = useState<Event[] | []>([]);
   const [dates, setDates] = useState<string[]>([]);
   const [addEventVisible, setAddEventVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // auth screen
   const [activeTab, setActiveTab] = useState("login");
@@ -33,7 +35,7 @@ export default function Index() {
     const retrieveLoggedInInfo = async () => {
       try {
         const value = await AsyncStorage.getItem('logged_in');
-        setLoggedIn(value ?? "");
+        setLoggedIn(value);
         return value;
       } catch (e) {
         return false;
@@ -74,6 +76,27 @@ export default function Index() {
         }
       };
       fetchUser();
+
+      const fetchEvents = async () => {
+        try {
+          const data = await AirtableService.getActivitiesExceptMine(userId);
+          if (data && data.length > 0) {
+            const eventData = data;
+            
+            let allEventsArr: Event[] = []; 
+            for (let i in eventData) {
+                let event = mapAirtableEvent(data[i].fields);
+                allEventsArr.push(event); 
+            }
+            setEvents(allEventsArr); 
+          } else {
+            console.log("No events found");
+          }
+        } catch (e) {
+          console.error("Error fetching events:", e);
+        }
+      }
+      fetchEvents();
     }
   }, [loggedIn, userId]);
 
@@ -95,7 +118,7 @@ export default function Index() {
   <View className="flex-1 items-center">
     {user && user.name ? (
       <Image
-        source={{ uri: `https://api.dicebear.com/9.x/adventurer/png?seed=${encodeURIComponent(user.name)}&glassesProbability=0` }}
+        source={{ uri: user.avatarlink }}
         className="w-20 h-20 mb-2 rounded-full border-2 border-white shadow-lg ml-4"
         resizeMode="cover"
       />
@@ -112,19 +135,18 @@ export default function Index() {
 </View>
 
 
-        {/* Welcome Text */}
-        <View className="mt-4 mb-10 items-center">
-          <Text className="text-xl font-bold text-gray-900">Hi, {user.name}</Text>
-          <Text className="text-sm text-gray-600">Make a new jumbuddy today!</Text>
-        </View>
+  {/* Welcome Text */}
+  <View className="mt-4 mb-10 items-center">
+    <Text className="text-xl font-bold text-gray-900">Hi, {user.name}</Text>
+    <Text className="text-sm text-gray-600">Make a new jumbuddy today!</Text>
+  </View>
 
-        {/* Dates Row */}
-        <View className="flex-row justify-around py-4 border-b border-gray-300">
-        {dates.map((date, index) => {
-        const day = format(addDays(new Date(), index), "EEE").toLowerCase(); // Get short weekday name
-        const dayNumber = format(addDays(new Date(), index), "dd"); // Get day number
-
-        return (
+  {/* Dates Row */}
+  <View className="flex-row justify-around py-4 border-b border-gray-300">
+  {dates.map((date, index) => {
+  const day = format(addDays(new Date(), index), "EEE").toLowerCase(); // Get short weekday name
+  const dayNumber = format(addDays(new Date(), index), "dd"); // Get day number
+    return (
           <View key={index} className="items-center">
             <Text className={`text-sm font-semibold ${index === 0 ? "text-blue-500" : "text-gray-500"}`}>
               {day}
@@ -133,34 +155,50 @@ export default function Index() {
               {dayNumber}
             </Text>
           </View>
-        );
-      })}
+      )})};
     </View>
 
 
-        <ScrollView className="px-4">
-          {/* Upcoming Events */}
-          <View className="bg-gray-100 p-6 rounded-lg shadow-md mt-6">
-            <Text className="text-xl font-bold mb-4">Upcoming Events</Text>
-            <EventCard
-              date="09"
-              month="March"
-              time="10:00am - 14:00pm"
-              title="hot pot night!"
-              location="happy lamb, chinatown"
-            />
+    <ScrollView className="px-4">
+      {/* Upcoming Events */}
+      <View className="pb-20">
+      <View className="bg-gray-100 p-6 rounded-lg shadow-md mt-6">
+        <Text className="text-xl font-bold mb-4">Upcoming Events</Text>
+        {/* map of event cards */}
+        <View>
+        {events.map((event: Event, index) => (
+          <View className="mt-2">
+          <EventCard key={index} event={event} />
           </View>
-          <View className="flex-row items-center justify-center mt-6">
-          <TouchableOpacity className="flex-row items-center justify-center mt-6">
-            <Feather name="plus-circle" size={20} color="#2563EB" />
-            <Text 
-              className="text-blue-600 text-lg font-semibold ml-2"
-              onPress={handleAddEvent}
-              >Add Event</Text>
-          </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+        ))}
+        </View>
+      </View>
+      
+      <View className="flex-row items-center justify-center mt-6">
+      <TouchableOpacity
+        className="flex-row items-center justify-center mt-6"
+        onPress={() => setModalVisible(true)}
+      >
+        <Feather name="plus-circle" size={20} color="#2563EB" />
+        <Text className="text-blue-600 text-lg font-semibold ml-2">
+          Add Event
+        </Text>
+      </TouchableOpacity>
+      
+      {/* Render the modal conditionally */}
+      {modalVisible && (
+        <PostEvent 
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
+      </View>
+    </View>
+      
+    {/* </View> */}
+
+    </ScrollView>
+    </SafeAreaView>
     </View>
   ) : (
     <SafeAreaView className="flex-1 bg-white">
@@ -168,17 +206,12 @@ export default function Index() {
     <View className="px-2">
       <View className="justify-center items-center">
         <View className="justify-center items-center mt-3">
-        <ImageBackground
-          // source={jumbuddylogo}
-          className="w-40 h-40 rounded-full overflow-hidden border border-gray-300 shadow-lg"
-          resizeMode="cover"
-        >
-          <Image
-            source={jumbuddylogo}
-            className="w-36 h-36 self-center"
-            resizeMode="contain"
-          />
-        </ImageBackground>
+        {/* <Image 
+          source={logo} 
+          className="w-40 h-40 rounded-full border border-gray-300 shadow-lg"
+          resizeMode="cover" // Keeps the circle filled
+          style={{ transform: [{ scale: 0.8 }] }} // Zooms out the image inside the circle
+        /> */}
         </View>
         <View className="m-2"> 
           <Text className="text-3xl font-bold">
@@ -210,19 +243,6 @@ export default function Index() {
       )}
       </View>
     </ScrollView>
-    {/* Event modal */}
-      <Modal
-      animationType="slide"
-      transparent={false}
-      visible={addEventVisible}
-      onRequestClose={() => setAddEventVisible(false)}
-    >
-    <View className="flex-1 justify-center items-center bg-black/50">
-      <View className="w-[90%] bg-white p-6 rounded-xl shadow-lg">
-        <PostEvent closeModal={() => setAddEventVisible(false)} />
-      </View>
-    </View>
-  </Modal>
 
   </SafeAreaView>
   ));

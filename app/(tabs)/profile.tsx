@@ -3,9 +3,10 @@ import { SafeAreaView, ScrollView, View, Text, Image, TouchableOpacity  } from '
 import { Picker } from '@react-native-picker/picker';
 import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User, mapAirtableUser } from "@/components/mapAirtableUser";
+import { User, mapAirtableUser } from "@/components/mapAirtable";
 import AirtableService from "../../airtable";
-import AvatarCustomizer from "../components/AvatarCustomizer"; 
+import AvatarCustomizer from "../AvatarCustomizer"; 
+import { useRouter } from "expo-router";
 
 
 interface AvatarOptions {
@@ -22,6 +23,8 @@ const ProfileScreen: React.FC = () => {
   const [uniqueId, setUniqueId] = useState("");
   const [loading, setLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState("");
+  const router = useRouter();
+
   const [avatarOptions, setAvatarOptions] = useState<AvatarOptions>({
     seed: "Emily",
     eyes: "variant01",      // Default value
@@ -30,6 +33,18 @@ const ProfileScreen: React.FC = () => {
     skinColor: "f2d3b1",     // Default value
     hairColor: "0e0e0e" 
   });
+
+  useEffect(() => {
+    const populateDefaultAvatarOptions = async () => {
+      const defaultOptions = await AsyncStorage.getItem("avatar_options");
+      if (defaultOptions) {
+        setAvatarOptions(JSON.parse(defaultOptions));
+      }
+    };
+  
+    populateDefaultAvatarOptions();
+  }, []);
+  
   
   
   const firstName = 'Emily';
@@ -39,6 +54,8 @@ const ProfileScreen: React.FC = () => {
   const classes = ['EN1', 'PHY11', 'MATH34', 'CS11'];
   const interests = ['Gym', 'Photography', 'Economics', 'Food'];
   const gradYear = 2028;
+
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -57,14 +74,17 @@ const ProfileScreen: React.FC = () => {
         const hairColor = params.get("hairColor");
         console.log(seed, eyes, hair, mouth, skinColor, hairColor);
         if (seed && eyes && hair && mouth && skinColor && hairColor) {
-          setAvatarOptions({
+          let payload = {
             seed: data[0].fields.avatarlink,
             eyes: eyes,
             hair: hair,
             mouth: mouth,
             skinColor: skinColor,
             hairColor: hairColor
-          });
+          }
+
+          AsyncStorage.setItem("avatar_options", JSON.stringify(payload));
+          setAvatarOptions(payload);
         }
 
         if (data && data.length > 0) {
@@ -94,6 +114,8 @@ const ProfileScreen: React.FC = () => {
       if (avatarOptions.mouth) url += `&mouth=${avatarOptions.mouth}`;
       if (avatarOptions.skinColor) url += `&skinColor=${avatarOptions.skinColor}`;
       if (avatarOptions.hairColor) url += `&hairColor=${avatarOptions.hairColor}`;
+
+      AsyncStorage.setItem("avatar_options", JSON.stringify(avatarOptions));
 
       console.log("Fetching avatar from:", url);
       setAvatarUrl(url); 
@@ -129,27 +151,31 @@ const ProfileScreen: React.FC = () => {
 
           {/* Profile Avatar and Info */}
           <View className="items-center mb-6">
-            {avatarUrl ? (
-              <Image
-                source={{ uri: avatarUrl }}
-                className="w-40 h-40 mb-4 rounded-full"
-                resizeMode="cover"
-              />
-            ) : (
-              <Text className="text-gray-600">Loading avatar...</Text>
-            )}
-            <Text className="text-3xl font-bold">{user.name}</Text>
-            <Text className="text-xl text-gray-600">Class of {user.gradyear}</Text>
+              {/* Avatar Image */}
+              {avatarUrl ? (
+                <Image
+                  source={{ uri: avatarUrl }}
+                  className="w-40 h-40 mb-4 rounded-full"
+                  resizeMode="cover"
+                />
+              ) : (
+                <Text className="text-gray-600">Loading avatar...</Text>
+              )}
+
+              {/* Edit Profile Button */}
+              <TouchableOpacity onPress={() => router.push({ pathname: "/EditProfilePage", params: { initialPage: "5" } })}>
+                <Text className="text-blue-600">Edit Profile</Text>
+              </TouchableOpacity>
+
+
+              <Text className="text-3xl font-bold">{user.name}</Text>
+              <Text className="text-xl text-gray-600">Class of {user.gradyear}</Text>
+            </View>
             <View className="flex-row space-x-4 mt-2">
               <Text className="text-gray-600">Buddies: {buddies}</Text>
               <Text className="text-gray-600">Activities: {activitiesJoined}</Text>
             </View>
-          </View>
 
-          {/* Avatar Customization Component */}
-          <View className="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
-            <AvatarCustomizer avatarOptions={avatarOptions} setAvatarOptions={setAvatarOptions} />
-          </View>
 
           {/* Classes */}
           <View className="mb-6">
@@ -178,7 +204,7 @@ const ProfileScreen: React.FC = () => {
             <Text className="text-gray-600">No upcoming events at the moment.</Text>
           </View>
         </ScrollView>
-      ) : (
+       ) : (
         <View className="flex-1 justify-center items-center">
           <Text className="text-lg text-red-600">User not found!</Text>
         </View>

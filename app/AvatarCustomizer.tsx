@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-interface AvatarOptions {
+export interface AvatarOptions {
   seed: string;
   eyes?: string;
   hair?: string;
@@ -16,7 +16,8 @@ interface AvatarCustomizerProps {
   setAvatarOptions: React.Dispatch<React.SetStateAction<AvatarOptions>>;
 }
 
-const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({ avatarOptions, setAvatarOptions }: AvatarCustomizerProps) => {
+const AvatarCustomizer: React.FC<AvatarCustomizerProps> = (props: AvatarCustomizerProps) => {
+  
   const features = {
     eyes: ["variant01", "variant02", "variant03", "variant04", "variant05"],
     hair: ["long01", "short01", "long16", "long09", "short11", "short17"],
@@ -26,7 +27,7 @@ const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({ avatarOptions, setA
   };
 
   const updateAvatar = (key: keyof AvatarOptions, value: string) => {
-    setAvatarOptions((prev) => ({ ...prev, [key]: value || "defaultValue" }));
+    props.setAvatarOptions((prev) => ({ ...prev, [key]: value || "defaultValue" }));
   };  
 
   return (
@@ -40,7 +41,7 @@ const AvatarCustomizer: React.FC<AvatarCustomizerProps> = ({ avatarOptions, setA
             {key.charAt(0).toUpperCase() + key.slice(1)}
           </Text>
           <Picker
-            selectedValue={avatarOptions[key as keyof AvatarOptions]}
+            selectedValue={props.avatarOptions[key as keyof AvatarOptions] || ""} 
             onValueChange={(value) => updateAvatar(key as keyof AvatarOptions, value)}
           >
             {options.map((option) => (

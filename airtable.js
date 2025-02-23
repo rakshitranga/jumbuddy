@@ -29,24 +29,24 @@ const AirtableService = {
     }
   },
 
-  getRecords: async () => {
-    try {
-      const response = await axios.get(AIRTABLE_TABLE_URL, {
-        headers: {
-          Authorization: `Bearer ${API_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      });
-      return response.data.records;
-    } catch (error) {
-      console.error("Error fetching Airtable records:", error);
-      return [];
-    }
-  },
+  // getRecords: async () => {
+  //   try {
+  //     const response = await axios.get(AIRTABLE_TABLE_URL, {
+  //       headers: {
+  //         Authorization: `Bearer ${API_TOKEN}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     return response.data.records;
+  //   } catch (error) {
+  //     console.error("Error fetching Airtable records:", error);
+  //     return [];
+  //   }
+  // },
 
   getActivitiesExceptMine: async (id) => {
     try {
-      const response = await axios.get(`${AIRTABLE_URL}?filterByFormula=NOT({id}='${id}')`, {
+      const response = await axios.get(`${AIRTABLE_TABLE_URL}?filterByFormula=NOT({host}='${id}')`, {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ const AirtableService = {
 
   getMyActivities: async (id) => {
     try {
-      const response = await axios.get(`${AIRTABLE_TABLE_URL}?filterByFormula=({id}='${id}')`, {
+      const response = await axios.get(`${AIRTABLE_TABLE_URL}?filterByFormula=({host}='${id}')`, {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
           "Content-Type": "application/json",
@@ -75,10 +75,11 @@ const AirtableService = {
   },
 
   getMyActivitiesByFriendIds: async (friendids) => {
+    console.log(friendids);
     idArray = friendids.split(",");
     formula = "OR(";
     for (let i = 0; i < idArray.length; i++) {
-        formula += "{id}=\'" + idArray[i] + "\'" + (i == idArray.length - 1 ? "" : ",");
+        formula += "{host}=\'" + idArray[i] + "\'" + (i == idArray.length - 1 ? "" : ",");
     }
     formula += ")";
     let url = `${AIRTABLE_TABLE_URL}?filterByFormula=${formula}`;
@@ -134,6 +135,7 @@ const AirtableService = {
         formula += "{id}=\'" + idArray[i] + "\'" + (i == idArray.length - 1 ? "" : ",");
     }
     formula += ")";
+    console.log(formula);
     let url = `${AIRTABLE_URL}?filterByFormula=${formula}`;
     try {
         const response = await axios.get(url, {
@@ -179,6 +181,27 @@ const AirtableService = {
     try {
       const response = await axios.post(
         AIRTABLE_URL,
+        {
+          records: [{ fields }],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${API_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error adding record:", error);
+      return null;
+    }
+  },
+
+  addActivity: async (fields) => {
+    try {
+      const response = await axios.post(
+        AIRTABLE_TABLE_URL,
         {
           records: [{ fields }],
         },

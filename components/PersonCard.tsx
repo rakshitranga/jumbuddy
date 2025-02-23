@@ -1,14 +1,18 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
-import { User } from "@/components/mapAirtableUser";
+import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { User } from "@/components/mapAirtable";
 
 interface PersonCardProps {
   user: User;
 }
 
 export default function PersonCard({ user }: PersonCardProps) {
-  const avatarUrl = `https://api.dicebear.com/9.x/adventurer/png?seed=${encodeURIComponent(user.name)}&glassesProbability=0`;
+  const avatarUrl = user.avatarlink;
   console.log("Avatar URL for", user.name, ":", avatarUrl); 
+
+  const addFriend = () => {
+    console.log("Adding friend:");
+  }
 
   return (
     <View className="bg-white rounded-lg shadow p-4 my-4">
@@ -53,25 +57,15 @@ export default function PersonCard({ user }: PersonCardProps) {
             </View>
           ))}
         </View>
-
-        {/* Looking For
-        <Text className="text-lg font-semibold mt-4 mb-1">Looking For</Text>
-        <View className="flex-row flex-wrap">
-          {user.lookingFor.map((item, idx) => (
-            <View
-              key={`looking-${idx}`}
-              className="bg-gray-500 rounded-full px-3 py-1 m-1 shadow"
-            >
-              <Text className="text-white text-sm">{item}</Text>
-            </View>
-          ))}
-        </View> */}
       </View>
 
       {/* Description Section */}
       <View className="mt-4">
         <Text className="text-lg font-semibold">Bio:</Text>
         <Text className="text-gray-700 mt-1">{user.bio}</Text>
+      </View>
+      <View className="mt-4">
+          <TouchableOpacity onPress={addFriend}>Add Friend</TouchableOpacity>
       </View>
     </View>
   );

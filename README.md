@@ -1,50 +1,49 @@
-# Welcome to your Expo app 👋
+================================================================================
+JumBuddy
+================================================================================
+Created by: JumBuddy (Sofia Alvazzi, Alea Rao, Rakshi Rangaprasad, Kabir Goklani, Natalie Phua, Chloe Wong)
+Presented at JumboHack 2025 under the Down The Rabbit Hole track.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Our project allows Tufts students to meet other students based on shared 
+interests and classes, and post and join events at Tufts. 
 
-## Get started
+Team Member Contributions:
+    Chloe Wong: Created the Figma design of the app user interface
+    Sofia Alvazzi: Contributed to writing the UI and functionality of the web app
+    Kabir Goklani: Contributed to writing the UI and functionality of the web app
+    Rakshi Rangaprasad: Handled airtable database and CRUD functionality
+    Natalie Phua: Worked in backend database and connected backend with frontend
+    Alea Rao: Added the avatars for the users, and helped work on UI/functionality of the web app
 
-1. Install dependencies
+ACKNOWLEDGEMENTS
+<External libraries, other hackers/teams, generative AI models (i.e. ChatGPT),
+online resources, etc.>
 
-   ```bash
-   npm install
-   ```
+We utilied the following tools to build our app:
+- Expo Docs
+- ChatGPT
+- Dicebear Docs
+- Tailwind Docs
+- Figma
 
-2. Start the app
+REFLECTION
+<What motivated your team to choose this project?>
+As freshmen, we know how hard it can be to break out of your comfort zone and 
+find friends who truly click with you. We built JumBuddy to help fellow Jumbos 
+easily discover events, connect over shared interests, and create lasting 
+memories on campus!
 
-   ```bash
-    npx expo start
-   ```
+<Potential future work/improvements?>
+In the future, we would like to add a friend system with notifications and 
+locations with a map, so you can see what your jumBuddy friends are up to around 
+campus. E.g “John is in tisch, study with him!” if you were to enter tisch. 
 
-In the output, you'll find options to open the app in a
+<What is a challenge you encountered while making this?>
+A challenge we encountered was connecting the frontend with the backend. Many times we
+would be all be working on the code simultaneously using liveshare. If something was wrong
+in either area, it would slow testing processes, which was difficult at times.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<What is a fun or interesting experience you had with another hacker?>
+We locked ourselves in JCC 280 for the past two days, and had 'hype up sessions' to 
+motivate ourselves and get our bodies moving. We would stretch and run around the
+room while playing hype music. 

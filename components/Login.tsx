@@ -13,6 +13,7 @@ export default function Login(props: loginProps) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [selectedTab, setSelectedTab] = useState("login");
+    const [incorrect, setIncorrect] = useState(false);
 
     const handleLogin = async (username: string, password: string) => {
         try {
@@ -28,12 +29,13 @@ export default function Login(props: loginProps) {
               console.log("Unexpected data structure:", data);
             }
         } catch (error) {
-        console.error("Login error:", error);
+            setIncorrect(true);
+            console.error("Login error:", error);
         }
     };
 
     return (
-        <View>
+        incorrect ? (<Text>Incorrect Username or Password</Text>) : (<View>
             <View className="mb-6"> 
               <Text className="text-lg font-semibold mb-2">Username: </Text>
               <TextInput
@@ -61,6 +63,6 @@ export default function Login(props: loginProps) {
             >
                 <Text className="text-white text-lg font-bold">Login</Text>
             </TouchableOpacity>
-        </View>
+        </View>)
     )
 }

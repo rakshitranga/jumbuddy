@@ -4,6 +4,8 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AirtableService from '@/airtable';
+import AvatarCustomizer, {AvatarOptions} from './AvatarCustomizer';
+import { Avatar } from 'react-native-paper';
 
 export default function SetProfilePage() {
     const [page, setPage] = useState(1);
@@ -15,7 +17,16 @@ export default function SetProfilePage() {
     const [interestInput, setInterestInput] = useState('');
     const [userInterests, setUserInterests] = useState<string[]>([]);
     const popularInterests = ['gym', 'art', 'food', 'going out'];
-
+    const [bio, setBio] = useState("");
+    const [avatarOptions, setAvatarOptions] = useState<AvatarOptions>({
+      seed: "User",
+      eyes: "variant01",
+      hair: "long09",
+      mouth: "variant01",
+      skinColor: "f2d3b1",
+      hairColor: "0e0e0e",
+    });
+  
     const router = useRouter();
     
     const handleAddClass = () => {
@@ -39,7 +50,7 @@ export default function SetProfilePage() {
           return;
         }
       }
-      if(page < 3) {
+      if(page < 5) {
         setPage(page + 1);
       } else {
         // update user with new data and reroute
@@ -50,9 +61,11 @@ export default function SetProfilePage() {
               'name': name,
               'gradyear': graduationYear,
               'major': major,
+              'avatarlink': `https://api.dicebear.com/9.x/adventurer/png?seed=${encodeURIComponent(avatarOptions.seed)}&eyes=${avatarOptions.eyes}&hair=${avatarOptions.hair}&mouth=${avatarOptions.mouth}&skinColor=${avatarOptions.skinColor}&hairColor=${avatarOptions.hairColor}&glassesProbability=0`,
               'classes': userClasses.join(','),
               'interests': userInterests.join(',')
             });
+            router.push("/profile");
             console.log(result);
           }
         }
@@ -205,23 +218,57 @@ export default function SetProfilePage() {
               </ScrollView>
             </View>
         );
-    } else {
-      content = <View></View>
-    }
+      } else if (page == 4) {
+        content = (
+            <View>
+                <ScrollView className="p-4">
+                    <Text className="text-3xl font-bold mb-8">
+                        make your <Text className="text-blue-600">bio</Text>
+                    </Text>
+                    <View className="mb-6">
+                        <Text className="text-lg font-semibold mb-2">What's your bio?</Text>
+                        <TextInput
+                            value={bio}
+                            onChangeText={setBio}
+                            placeholder="Enter bio here"
+                            placeholderTextColor="#4B5563"  // Darker placeholder text
+                            className="border border-gray-300 rounded-lg p-4 text-base"
+                        />
+                    </View>
+                </ScrollView>
+            </View>
+        );
+    } else if (page === 5) { 
+        content = (
+            <View>
+                <ScrollView className="p-4">
+                    <Text className="text-3xl font-bold mb-8">customize your <Text className="text-blue-600">avatar</Text></Text>
+    
+                    {/* Avatar Preview */}
+                    <View className="items-center mb-4">
+                        <Image 
+                            source={{ uri: `https://api.dicebear.com/9.x/adventurer/png?seed=${encodeURIComponent(avatarOptions.seed)}&eyes=${avatarOptions.eyes}&hair=${avatarOptions.hair}&mouth=${avatarOptions.mouth}&skinColor=${avatarOptions.skinColor}&hairColor=${avatarOptions.hairColor}&glassesProbability=0` }}
+                            className="w-40 h-40 mb-4 rounded-full"
+                            resizeMode="cover"
+                        />
+                    </View>
+    
+                    {/* Avatar Customization Component */}
+                    <AvatarCustomizer avatarOptions={avatarOptions} setAvatarOptions={setAvatarOptions}/>
+                </ScrollView>
+            </View>
+        );
+    };
 
     return (
-      <View className = "p-6">
-        {content}
-
-       <TouchableOpacity
-          onPress={handleNext}
-          className="py-4 rounded-lg items-center"
-          style={{ backgroundColor: "#0057D2"}}
-          >
-          <Text className="text-white text-lg font-bold">
-            {page === 3 ? "Let's go!" : "Next"}
-          </Text>
-      </TouchableOpacity>
+      <View className="p-6">
+        <ScrollView>
+            {content}
+            <TouchableOpacity onPress={handleNext} className="py-4 rounded-lg items-center" style={{ backgroundColor: "#0057D2"}}>
+                <Text className="text-white text-lg font-bold">
+                    {page === 5 ? "Let's go!" : "Next"}
+                </Text>
+            </TouchableOpacity>
+          </ScrollView>
       </View>
-    )
-}
+  )};

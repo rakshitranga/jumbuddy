@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import PersonCard from '@/components/PersonCard';
-import { User, mapAirtableUser } from "@/components/mapAirtableUser";
+import { User, mapAirtableUser } from "@/components/mapAirtable";
 import AirtableService from "../../airtable";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import '../../global.css';
@@ -15,7 +15,8 @@ export default function JumBuddyScreen() {
     const fetchJumbuddies = async () => {
       const userId = await AsyncStorage.getItem("user_id");
       const data = await AirtableService.getUserById(userId);
-      const allUsers = await AirtableService.getUsersExceptFriendsIds(data[0].fields.friendids + "," + userId);
+      const formula = data[0].fields.friendids + "," + userId;
+      const allUsers = await AirtableService.getUsersExceptFriendsIds(formula);
 
       // converting records to User objects 
       let allUsersArr: User[] = []; 
@@ -25,6 +26,7 @@ export default function JumBuddyScreen() {
       }
 
       setUsers(allUsersArr);
+      console.log(users);
     }
     fetchJumbuddies(); 
   }, []);

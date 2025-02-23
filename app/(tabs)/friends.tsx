@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { styled } from 'nativewind';
 import AirtableService from "../../airtable";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { User } from '@/components/mapAirtableUser';
+// import { User } from '@/components/mapAirtable';
 
 const FriendsScreen = () => {
   const [userFriends, setUserFriends] = useState([]);
